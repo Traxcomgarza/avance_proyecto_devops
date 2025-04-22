@@ -11,7 +11,7 @@ resource "aws_vpc" "vpc_avance_devops" {
     }
   
 }
-
+#----------------------public subnet----------------------
 resource "aws_subnet" "public_subnet" {
     vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
     cidr_block = "198.168.0.0/24"
@@ -21,7 +21,15 @@ resource "aws_subnet" "public_subnet" {
     }
   
 }
+#----------------------private subnet----------------------
+resource "aws_subnet" "private_subnet" {
+    vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
+    cidr_block = "198.168.1.0/24"
+    map_public_ip_on_launch = false 
+}
 
+
+#----------------igw----------------------
 resource "aws_internet_gateway" "igw" {
     vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
     tags = {
@@ -29,6 +37,7 @@ resource "aws_internet_gateway" "igw" {
     }
   
 }
+#----------------------public route table----------------------
 resource "aws_route_table" "public_route_table" {
     vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
     route {
@@ -40,32 +49,50 @@ resource "aws_route_table" "public_route_table" {
     }
 }
 
-resource "aws_security_group" "sg-windows-jumpserv" {
+#----------------------private route table----------------------
+resource "aws_route_table" "private_route_table" {
     vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
-    name = "SG-windows-jumpserver"
-    description = "Security group for Windows Jump Server"
+}
 
+#----------------------public route table association----------------------
+resource "aws_route_table_association" "public_route_association" {
+    subnet_id = aws_subnet.public_subnet.id #subnet id
+    route_table_id = aws_route_table.public_route_table.id #route table id   
+  
+}
+
+#----------------------private route table association----------------------
+resource "aws_route_table_association" "private_route_association" {
+    subnet_id = aws_subnet.private_subnet.id #subnet id
+    route_table_id = aws_route_table.private_route_table.id #route table id
+}
+ #--------------------Sg linux backend-------------------------
+resource "aws_security_group" "SG-linux-back-end" {
+    vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
+    name = "SG-linux-back-end"
+    description = "Security group for linux back-end Server"
     #ssh ingress and egress rules
-    ingress  {
+    ingress {
+        from_port = 3306
+        to_port = 3306
+        protocol = "tcp"
+        cidr_blocks = [ aws_instance.linux-webserver.private_ip ] #subnet id
+
+    }
+    ingress {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_blocks = [ "0.0.0.0/0" ]
+        cidr_blocks = [ aws_instance.linux-jumpserver.private_ip ] #subnet id
+    }
+   
+    tags = {
+        Name = "SG-windows-back-ender"
 
-  
+    }
 }
-egress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = [ "198.168.0.0/24" ] #subnet id
-}
-tags = {
-    Name = "sg-windows-jumpserver"
-
-}
-}
-resource "aws_security_group" "sg-linux-webserver" {
+#----------------------SG linux webserver----------------------
+resource "aws_security_group" "SG-linux-webserver" {
   vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
   name = "SG-linux-webserver"
   description = "Security group para servidor web Linux"
@@ -75,55 +102,84 @@ resource "aws_security_group" "sg-linux-webserver" {
     protocol = "tcp"
     cidr_blocks = [ "198.168.0.0/24" ] #subnet id
 
-  }
+    }
   ingress {
     from_port = 80
     to_port = 80
     protocol = "tcp"
     cidr_blocks = [ "0.0.0.0/0" ] #subnet id 
- }
-    egress {
-        from_port = 0
-        to_port = 0
-        protocol = "-1"
-        cidr_blocks = [ "0.0.0.0/0" ] #subnet id
-
-}
+    }
+  
     tags = {
-        Name = "sg-linux-webserver"
+        Name = "SG-linux-webserver"
     }
+}
+#----------------------SG linux jumpserver----------------------
+ resource "aws_security_group" "SG-linux-jumpserver" {
+        vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
+        name = "SG-linux-jumpserver"
+        description = "Security group for linux jumpserver"
+        ingress {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            cidr_blocks = [ "0.0.0.0/0" ]
+      
     }
+        egress {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            #Permite la conexion a la subnet privada y publica
+            cidr_blocks = [ "198.168.0.0/24", "198.168.1.0/24" ] #subnet id
 
-resource "aws_instance" "windows-jumpserver" {
-    ami = "ami-0c765d44cf1f25d26" #ami id
-    instance_type = "t2.medium"
+     }
+        tags = {
+            Name = "SG-linux-jumpserver"
+        }
+ 
+       
+}
+#----------------------linux jumpserver----------------------
+resource "aws_instance" "linux-jumpserver" {
+    ami = "ami-084568db4383264d4" 
+    instance_type = "t2.micro"
     subnet_id = aws_subnet.public_subnet.id #subnet id
-    vpc_security_group_ids = [aws_security_group.sg-windows-jumpserv.id] #sg id
+    vpc_security_group_ids = [aws_security_group.SG-linux-jumpserver.id] #security group id
     key_name = "vokey" #key pair name
     tags = {
-        Name = "windows-jumpserver"
+        Name = "linux-jumpserver"
     }
   
 }
-
+#----------------------linux webserver----------------------
 resource "aws_instance" "linux-webserver" {
-    ami = "ami-084568db4383264d4" #amazon linux 2
+    ami = "ami-084568db4383264d4" 
     instance_type = "t2.micro"
     subnet_id = aws_subnet.public_subnet.id #subnet id
-    vpc_security_group_ids = [aws_security_group.sg-linux-webserver.id] #sg id
+    vpc_security_group_ids = [aws_security_group.SG-linux-webserver.id] #security group id
     key_name = "vokey" #key pair name
     tags = {
         Name = "linux-webserver"
     }
   
 }
+#----------------------linux back-end----------------------
+resource "aws_instance" "linux-back-end" {
+    ami = "ami-084568db4383264d4" 
+    instance_type = "t2.micro"
+    subnet_id = aws_subnet.private_subnet.id #subnet id
+    vpc_security_group_ids = [aws_security_group.SG-linux-back-end.id] #security group id
+    key_name = "vokey" #key pair name
+    tags = {
+        Name = "linux-back-end"
+    }
+  
+}
 
 
 #output 
-output "windows-jumpserver_public_ip" {
-    value = aws_instance.windows-jumpserver.public_ip
-    description = "ip publica de la instancia windows-jumpserver"
-}
+
 output "linux-webserver_public_ip" {
     value = aws_instance.linux-webserver.public_ip
     description = "ip publica de la instancia linux-webserver"
