@@ -177,6 +177,36 @@ resource "aws_instance" "linux-back-end" {
   
 }
 
+#----------------------sg db----------------------
+
+resource "aws_security_group" "sg_db" {
+  vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
+  name = "sg_db"
+
+
+  ingress {
+    from_port   = 5432  # Puerto de PostgreSQL
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [aws_instance.linux-webserver.private_ip] 
+  }
+}
+
+
+resource "aws_db_instance" "BD" {
+  allocated_storage = 20
+  engine = postgrresql
+  engine_version = "14.2"
+  instance_class = db.t2.micro
+  db_name = bddevops
+  username = "admin"
+  password = "contraseña-devops" 
+  vpc_security_group_ids = [aws_security_group.sg_db.id] 
+  db_subnet_group_name = aws_db_subnet_group.devops_subnet_group.name 
+  publicly_accessible = false #no tiene ip publica
+  skip_final_snapshot = true #no se crea un snapshot final al eliminar la instancia, se pierde todo
+
+}
 
 #output 
 
