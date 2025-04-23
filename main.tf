@@ -148,7 +148,7 @@ resource "aws_instance" "linux-jumpserver" {
     instance_type = "t2.micro"
     subnet_id = aws_subnet.public_subnet.id #subnet id
     vpc_security_group_ids = [aws_security_group.SG-linux-jumpserver.id] #security group id
-    key_name = "vokey" #key pair name
+    key_name = "vockey" #key pair name
     tags = {
         Name = "linux-jumpserver"
     }
@@ -160,7 +160,7 @@ resource "aws_instance" "linux-webserver" {
     instance_type = "t2.micro"
     subnet_id = aws_subnet.public_subnet.id #subnet id
     vpc_security_group_ids = [aws_security_group.SG-linux-webserver.id] #security group id
-    key_name = "vokey" #key pair name
+    key_name = "vockey" #key pair name
     tags = {
         Name = "linux-webserver"
     }
@@ -172,7 +172,7 @@ resource "aws_instance" "linux-back-end" {
     instance_type = "t2.micro"
     subnet_id = aws_subnet.private_subnet.id #subnet id
     vpc_security_group_ids = [aws_security_group.SG-linux-back-end.id] #security group id
-    key_name = "vokey" #key pair name
+    key_name = "vockey" #key pair name
     tags = {
         Name = "linux-back-end"
     }
