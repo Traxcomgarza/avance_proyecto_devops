@@ -225,7 +225,7 @@ resource "aws_db_instance" "BD" {
   instance_class = "db.t3.micro"
   db_name = "bddevops"
   username = "db_admin_user"
-  password = "contraseña-devops" 
+  password = "SecureP@ss123!" 
   vpc_security_group_ids = [aws_security_group.sg_db.id] 
   db_subnet_group_name = aws_db_subnet_group.devops_subnet_group.name 
   publicly_accessible = false #no tiene ip publica
