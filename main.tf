@@ -66,6 +66,33 @@ resource "aws_route_table_association" "private_route_association" {
     subnet_id = aws_subnet.private_subnet.id #subnet id
     route_table_id = aws_route_table.private_route_table.id #route table id
 }
+
+#----------------------SG linux jumpserver----------------------
+ resource "aws_security_group" "SG-linux-jumpserver" {
+        vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
+        name = "SG-linux-jumpserver"
+        description = "Security group for linux jumpserver"
+        ingress {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            cidr_blocks = [ "0.0.0.0/0" ]
+      
+    }
+        egress {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            #Permite la conexion a la subnet privada y publica
+            cidr_blocks = [ "10.0.0.0/24", "10.0.1.0/24" ] #subnet id
+
+     }
+        tags = {
+            Name = "SG-linux-jumpserver"
+        }
+ 
+       
+}
  #--------------------Sg linux backend-------------------------
 resource "aws_security_group" "SG-linux-back-end" {
     vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
@@ -114,32 +141,7 @@ resource "aws_security_group" "SG-linux-webserver" {
         Name = "SG-linux-webserver"
     }
 }
-#----------------------SG linux jumpserver----------------------
- resource "aws_security_group" "SG-linux-jumpserver" {
-        vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
-        name = "SG-linux-jumpserver"
-        description = "Security group for linux jumpserver"
-        ingress {
-            from_port = 22
-            to_port = 22
-            protocol = "tcp"
-            cidr_blocks = [ "0.0.0.0/0" ]
-      
-    }
-        egress {
-            from_port = 22
-            to_port = 22
-            protocol = "tcp"
-            #Permite la conexion a la subnet privada y publica
-            cidr_blocks = [ "10.0.0.0/24", "10.0.1.0/24" ] #subnet id
 
-     }
-        tags = {
-            Name = "SG-linux-jumpserver"
-        }
- 
-       
-}
 #----------------------linux jumpserver----------------------
 resource "aws_instance" "linux-jumpserver" {
     ami = "ami-084568db4383264d4" 
