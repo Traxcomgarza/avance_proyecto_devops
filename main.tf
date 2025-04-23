@@ -224,7 +224,7 @@ resource "aws_db_instance" "BD" {
   engine_version = "17.2"
   instance_class = "db.t3.micro"
   db_name = "bddevops"
-  username = "admin"
+  username = "db_admin_user"
   password = "contraseña-devops" 
   vpc_security_group_ids = [aws_security_group.sg_db.id] 
   db_subnet_group_name = aws_db_subnet_group.devops_subnet_group.name 
