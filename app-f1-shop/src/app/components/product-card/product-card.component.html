@@ -1,0 +1,38 @@
+<div class="card h-100">
+  <img [src]="img()" class="card-img-top" [alt]="title()">
+  <div class="card-body">
+
+    <h5 class="card-title">{{ title() }}</h5>
+    <p class="card-text">{{ description() }}</p>
+    <h4 class="fw-bold text-primary">{{ price() | currency: 'MXN' }}</h4>
+
+    @if(stock() > 0) {
+      <small class="text-body-secondary">
+        En stock: {{ stock() }} {{ stock() === 1 ? 'producto' : 'productos' }}
+      </small>
+
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="btn-group" role="group" aria-label="Basic outlined example">
+            <button type="button" class="btn btn-outline-primary" (click)="decrementQuantity()">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <button type="button" disabled class="btn btn-outline-primary">
+              {{ quantity() }}
+            </button>
+            <button type="button" class="btn btn-outline-primary" (click)="incrementQuantity()">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+    
+        <button type="button" class="btn btn-outline-primary" (click)="onClickAddToCart()">Agregar al carrito</button>
+      </div>
+    }
+    @if(stock() === 0) {
+      <div class="p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3">
+        Producto agotado
+      </div>
+    }
+  </div>
+</div>
