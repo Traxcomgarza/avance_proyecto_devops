@@ -3,7 +3,7 @@ provider "aws" {
     #revisar region
 }
 resource "aws_vpc" "vpc_avance_devops" {
-    cidr_block = "198.168.0.0/20"
+    cidr_block = "10.0.0.0/20"
     enable_dns_hostnames = true
     enable_dns_support = true
     tags = {
@@ -14,7 +14,7 @@ resource "aws_vpc" "vpc_avance_devops" {
 #----------------------public subnet----------------------
 resource "aws_subnet" "public_subnet" {
     vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
-    cidr_block = "198.168.0.0/24"
+    cidr_block = "10.0.0.0/24"
     map_public_ip_on_launch = true  
     tags = {
         Name = "public_subnet"
@@ -24,7 +24,7 @@ resource "aws_subnet" "public_subnet" {
 #----------------------private subnet----------------------
 resource "aws_subnet" "private_subnet" {
     vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
-    cidr_block = "198.168.1.0/24"
+    cidr_block = "10.0.1.0/24"
     map_public_ip_on_launch = false 
 }
 
@@ -100,7 +100,7 @@ resource "aws_security_group" "SG-linux-webserver" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [ "198.168.0.0/24" ] #subnet id
+    cidr_blocks = [ aws_instance.jump_server.private_ip ] #subnet id
 
     }
   ingress {
@@ -131,7 +131,7 @@ resource "aws_security_group" "SG-linux-webserver" {
             to_port = 22
             protocol = "tcp"
             #Permite la conexion a la subnet privada y publica
-            cidr_blocks = [ "198.168.0.0/24", "198.168.1.0/24" ] #subnet id
+            cidr_blocks = [ "10.0.0.0/24", "10.0.1.0/24" ] #subnet id
 
      }
         tags = {
@@ -176,6 +176,14 @@ resource "aws_instance" "linux-back-end" {
     }
   
 }
+#----------------------subnet group BD----------------------
+resource "aws_db_subnet_group" "devops_subnet_group" {
+  name       = "devops-subnet-group"
+  subnet_ids = [aws_subnet.private_subnet.id]  # Aquí referencias tu subnet privada existente
+  tags = {
+    Name = "DB Subnet Group"
+  }
+}
 
 #----------------------sg db----------------------
 
@@ -197,7 +205,7 @@ resource "aws_db_instance" "BD" {
   allocated_storage = 20
   engine = "postgres"
   engine_version = "17.2"
-  instance_class = db.t3.micro
+  instance_class = "db.t3.micro"
   db_name = "bddevops"
   username = "admin"
   password = "contraseña-devops" 
