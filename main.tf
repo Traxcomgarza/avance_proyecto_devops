@@ -195,10 +195,10 @@ resource "aws_security_group" "sg_db" {
 
 resource "aws_db_instance" "BD" {
   allocated_storage = 20
-  engine = postgrresql
-  engine_version = "14.2"
-  instance_class = db.t2.micro
-  db_name = bddevops
+  engine = "postgres"
+  engine_version = "17.2"
+  instance_class = db.t3.micro
+  db_name = "bddevops"
   username = "admin"
   password = "contraseña-devops" 
   vpc_security_group_ids = [aws_security_group.sg_db.id] 
