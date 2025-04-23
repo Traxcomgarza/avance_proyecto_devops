@@ -103,14 +103,14 @@ resource "aws_security_group" "SG-linux-back-end" {
         from_port = 3306
         to_port = 3306
         protocol = "tcp"
-        cidr_blocks = [ aws_instance.linux-webserver.private_ip ] #subnet id
+        cidr_blocks = [ "{aws_instance.linux-webserver.private_ip}/32" ] #subnet id
 
     }
     ingress {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_blocks = [ aws_instance.linux-jumpserver.private_ip ] #subnet id
+        cidr_blocks = [ "{aws_instance.linux-jumpserver.private_ip}/32" ] #subnet id
     }
    
     tags = {
@@ -127,7 +127,7 @@ resource "aws_security_group" "SG-linux-webserver" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [ aws_instance.linux-jumpserver.private_ip ] #subnet id
+    cidr_blocks = [ "{aws_instance.linux-jumpserver.private_ip}/32" ] #subnet id
 
     }
   ingress {
@@ -181,7 +181,7 @@ resource "aws_instance" "linux-back-end" {
 #----------------------subnet group BD----------------------
 resource "aws_db_subnet_group" "devops_subnet_group" {
   name       = "devops-subnet-group"
-  subnet_ids = [aws_subnet.private_subnet.id]  # Aquí referencias tu subnet privada existente
+  subnet_ids = [ aws_subnet.private_subnet.id ]  # Aquí referencias tu subnet privada existente
   tags = {
     Name = "DB Subnet Group"
   }
@@ -198,7 +198,7 @@ resource "aws_security_group" "sg_db" {
     from_port   = 5432  # Puerto de PostgreSQL
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [aws_instance.linux-webserver.private_ip] 
+    cidr_blocks = [ "{aws_instance.linux-webserver.private_ip}/32" ] 
   }
 }
 
