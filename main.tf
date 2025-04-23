@@ -229,7 +229,6 @@ resource "aws_db_instance" "BD" {
   vpc_security_group_ids = [aws_security_group.sg_db.id] 
   db_subnet_group_name = aws_db_subnet_group.devops_subnet_group.name 
   publicly_accessible = false #no tiene ip publica
-  multi_az = false #no es multi-AZ
   skip_final_snapshot = true #no se crea un snapshot final al eliminar la instancia, se pierde todo
 
 }
