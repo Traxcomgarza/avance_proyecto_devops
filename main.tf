@@ -28,6 +28,14 @@ resource "aws_subnet" "private_subnet" {
     map_public_ip_on_launch = false 
 }
 
+#----------------private subnet 2----------------------
+resource "aws_subnet" "private_subnet_2" {
+    vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
+    cidr_block = "10.0.2.0/24"
+    availability_zone       = "us-east-1c" #zona de disponibilidad
+    map_public_ip_on_launch = false
+
+    }
 
 #----------------igw----------------------
 resource "aws_internet_gateway" "igw" {
@@ -67,6 +75,12 @@ resource "aws_route_table_association" "private_route_association" {
     route_table_id = aws_route_table.private_route_table.id #route table id
 }
 
+#--------------------private route table association private subnet 2-------------------------
+resource "aws_route_table_association" "private_subnet_2_association" {
+  subnet_id      = aws_subnet.private_subnet_2.id
+  route_table_id = aws_route_table.private_route_table.id
+}
+
 #----------------------SG linux jumpserver----------------------
  resource "aws_security_group" "SG-linux-jumpserver" {
         vpc_id = aws_vpc.vpc_avance_devops.id #vpc id
@@ -103,14 +117,14 @@ resource "aws_security_group" "SG-linux-back-end" {
         from_port = 3306
         to_port = 3306
         protocol = "tcp"
-        cidr_blocks = [ "{aws_instance.linux-webserver.private_ip}/32" ] #subnet id
+        cidr_blocks = [ "${aws_instance.linux-webserver.private_ip}/32" ] #subnet id
 
     }
     ingress {
         from_port = 22
         to_port = 22
         protocol = "tcp"
-        cidr_blocks = [ "{aws_instance.linux-jumpserver.private_ip}/32" ] #subnet id
+        cidr_blocks = [ "${aws_instance.linux-jumpserver.private_ip}/32" ] #subnet id
     }
    
     tags = {
@@ -127,7 +141,7 @@ resource "aws_security_group" "SG-linux-webserver" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [ "{aws_instance.linux-jumpserver.private_ip}/32" ] #subnet id
+    cidr_blocks = [ "${aws_instance.linux-jumpserver.private_ip}/32" ] #subnet id
 
     }
   ingress {
@@ -181,7 +195,7 @@ resource "aws_instance" "linux-back-end" {
 #----------------------subnet group BD----------------------
 resource "aws_db_subnet_group" "devops_subnet_group" {
   name       = "devops-subnet-group"
-  subnet_ids = [ aws_subnet.private_subnet.id ]  # Aquí referencias tu subnet privada existente
+  subnet_ids = [ aws_subnet.private_subnet.id, aws_subnet.private_subnet_2.id ]  # Aquí referencias tu subnet privada existente
   tags = {
     Name = "DB Subnet Group"
   }
@@ -198,7 +212,7 @@ resource "aws_security_group" "sg_db" {
     from_port   = 5432  # Puerto de PostgreSQL
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [ "{aws_instance.linux-webserver.private_ip}/32" ] 
+    cidr_blocks = [ "${aws_instance.linux-webserver.private_ip}/32" ] 
   }
 }
 
