@@ -151,6 +151,13 @@ resource "aws_security_group" "SG-linux-webserver" {
     protocol = "tcp"
     cidr_blocks = [ "0.0.0.0/0" ] #subnet id 
     }
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = [ "0.0.0.0/0" ] #permite todo el trafico de salida para el uso de frameworks
+    }
+   
   
     tags = {
         Name = "SG-linux-webserver"
