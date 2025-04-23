@@ -127,7 +127,7 @@ resource "aws_security_group" "SG-linux-webserver" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [ aws_instance.jump_server.private_ip ] #subnet id
+    cidr_blocks = [ aws_instance.linux-jumpserver.private_ip ] #subnet id
 
     }
   ingress {
