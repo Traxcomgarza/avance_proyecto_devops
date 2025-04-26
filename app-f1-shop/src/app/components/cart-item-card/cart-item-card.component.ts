@@ -30,16 +30,16 @@ export class CartItemCardComponent {
   incrementQuantity(): void {
     if (this.quantity() === this.stock()) return;
     const newQuantity = this.quantity() + 1;
-    this.checkoutStore.updateCartItemQuantity(this.id(), newQuantity);
+    this.checkoutStore.updateCartItemQuantity(Number(this.id()), newQuantity);
   }
 
   decrementQuantity(): void {
     if (this.quantity() === 1) return;
     const newQuantity = this.quantity() - 1;
-    this.checkoutStore.updateCartItemQuantity(this.id(), newQuantity);
+    this.checkoutStore.updateCartItemQuantity(Number(this.id()), newQuantity);
   }
 
   onDeleteCartItem(cartItemId: string): void {
-    this.checkoutStore.deleteCartItem(cartItemId);
+    this.checkoutStore.deleteCartItem(Number(cartItemId));
   }
 }

@@ -28,14 +28,14 @@
       @for (product of this.products(); track $index) {
         <div class="col">
           <app-product-card
-            [productId]="+product.id"
+            [id]="product.id"
             [img]="product.img"
             [title]="product.title"
             [price]="product.price"
             [description]="product.description"
             [stock]="product.stock"
             (cartItem)="onClickAddToCart($event)"
-          />
+            />
         </div>
       }
     </div>

@@ -3,6 +3,7 @@ import { Component, input, output, signal } from '@angular/core';
 
 import { CartItem } from '../../models';
 
+
 @Component({
   selector: 'app-product-card',
   imports: [CommonModule],

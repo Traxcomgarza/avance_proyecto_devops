@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule} from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
@@ -9,10 +9,11 @@ import { CheckoutStoreService } from '../../services';
 import { environment } from '../../../environment';
 
 @Component({
+  standalone: true,
   selector: 'app-shop',
-  imports: [RouterLink, ProductCardComponent],
+  imports: [RouterLink, ProductCardComponent, HttpClientModule],
   templateUrl: './shop.component.html',
-  styleUrl: './shop.component.scss'
+  styleUrls: ['./shop.component.scss']
 })
 export class ShopComponent implements OnInit {
 

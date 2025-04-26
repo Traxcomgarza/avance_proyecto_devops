@@ -18,7 +18,7 @@
           @for (cartItem of this.cartItems(); track $index) {
             <div class="w-100">
               <app-cart-item-card 
-                [id]="cartItem.id"
+                [id]="cartItem.id.toString()"
                 [img]="cartItem.img"
                 [title]="cartItem.title"
                 [price]="cartItem.price"

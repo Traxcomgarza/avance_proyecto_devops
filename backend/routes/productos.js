@@ -81,4 +81,46 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// backend/routes/productos.js
+
+// Comprar un producto (actualizar el stock)
+router.post('/comprar', async (req, res) => {
+  try {
+    const { id, cantidad } = req.body;
+
+    // Verificar si la cantidad es válida
+    if (cantidad <= 0) {
+      return res.status(400).send('La cantidad debe ser mayor a 0');
+    }
+
+    // Verificar si el producto existe y obtener el stock actual
+    const result = await pool.query('SELECT stock FROM productos WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).send('Producto no encontrado');
+    }
+
+    const producto = result.rows[0];
+    if (producto.stock < cantidad) {
+      return res.status(400).send('No hay suficiente stock disponible');
+    }
+
+    // Actualizar el stock en la base de datos
+    const nuevoStock = producto.stock - cantidad;
+    const updateResult = await pool.query(
+      'UPDATE productos SET stock = $1 WHERE id = $2 RETURNING *',
+      [nuevoStock, id]
+    );
+
+    // Responder con el nuevo stock
+    res.json({
+      mensaje: 'Compra realizada con éxito',
+      nuevoStock: updateResult.rows[0].stock,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al procesar la compra');
+  }
+});
+
+
 module.exports = router;
