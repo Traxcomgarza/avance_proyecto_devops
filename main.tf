@@ -115,8 +115,8 @@ resource "aws_security_group" "SG-linux-back-end" {
     description = "Security group for linux back-end Server"
     #ssh ingress and egress rules
     ingress {
-        from_port = 3306
-        to_port = 3306
+        from_port = 5432
+        to_port = 5432
         protocol = "tcp"
         cidr_blocks = [ "${aws_instance.linux-webserver.private_ip}/32" ] #subnet id
 
