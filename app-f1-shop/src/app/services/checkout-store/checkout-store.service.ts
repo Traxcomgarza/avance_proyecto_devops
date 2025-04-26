@@ -1,13 +1,17 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { CartItem } from '../../models';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CheckoutStoreService {
 
-  constructor() { }
+  private apiUrl = environment.apiUrl + '/productos';
+
+  constructor(private http: HttpClient) { }
 
   public cartItems = signal<CartItem[]>([])
 
@@ -49,4 +53,17 @@ export class CheckoutStoreService {
       return items;
     });
   }
+  // Método para realizar la compra
+  public checkout(cartItems: CartItem[]): Observable<any> {
+    // Creamos un array con los datos que necesitamos para la compra
+    const compra = cartItems.map(item => ({
+      id: item.id,
+      cantidad: item.quantity
+    }));
+
+    // Enviamos la solicitud POST para procesar la compra
+    return this.http.post(this.apiUrl, compra);
+  }
 }
+
+
