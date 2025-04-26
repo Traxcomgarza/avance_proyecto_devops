@@ -19,7 +19,7 @@ export class CheckoutStoreService {
   public addCartItem(cartItem: CartItem): void {
     this.cartItems.update(items => {
       const index = items.findIndex(el => el.id === cartItem.id);
-      
+
       if (index !== -1) {
         const updatedItems = [...items];
         updatedItems[index] = { ...items[index], ...cartItem };
@@ -30,18 +30,18 @@ export class CheckoutStoreService {
     });
   }
 
-  public deleteCartItem(cartItemId: string): void {
+  public deleteCartItem(cartItemId: number): void {
     this.cartItems.update(items => items.filter(item => item.id !== cartItemId));
   }
 
-  public updateCartItemQuantity(cartItemId: string, newQuantity: number): void {
+  public updateCartItemQuantity(cartItemId: number, newQuantity: number): void {
     this.cartItems.update(items => {
       const index = items.findIndex(item => item.id === cartItemId);
       if (index !== -1) {
         const updatedItems = [...items];
-        updatedItems[index] = { 
-          ...updatedItems[index], 
-          quantity: newQuantity 
+        updatedItems[index] = {
+          ...updatedItems[index],
+          quantity: newQuantity
         };
         return updatedItems;
       }

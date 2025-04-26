@@ -7,7 +7,17 @@ const pool = require('../db');
 router.get('/', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM productos');
-    res.json(result.rows);
+    // vinculacion de los nombres de las columnas a los nombres de las propiedades del objeto
+    const productos = result.rows.map(producto => ({
+      id: producto.id,
+      img: producto.imagen, 
+      title: producto.titulo, 
+      description: producto.descripcion,     
+      price: producto.precio,           
+      stock: producto.stock
+                 
+    }));
+    res.json(productos);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los productos');

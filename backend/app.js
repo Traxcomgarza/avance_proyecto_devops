@@ -10,7 +10,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use('/api/usuarios', usuariosRoutes);
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200', // Cambia esto al dominio de tu frontend en producción
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/productos', productosRoutes);

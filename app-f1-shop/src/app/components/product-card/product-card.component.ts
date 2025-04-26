@@ -12,7 +12,7 @@ import { CartItem } from '../../models';
 
 export class ProductCardComponent {
 
-  id = input.required<string>();
+  id = input.required<number>();
   description = input.required<string>();
   img = input.required<string>();
   price = input.required<number>();

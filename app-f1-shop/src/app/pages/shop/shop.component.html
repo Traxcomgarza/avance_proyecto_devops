@@ -28,7 +28,7 @@
       @for (product of this.products(); track $index) {
         <div class="col">
           <app-product-card
-            [id]="product.id"
+            [productId]="+product.id"
             [img]="product.img"
             [title]="product.title"
             [price]="product.price"
