@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +13,18 @@ export class CheckoutStoreService {
   private apiUrl = environment.apiUrl + '/productos';
 
   constructor(private http: HttpClient) { }
+  public updateProductStockAfterCheckout(cartItems: CartItem[]): void {
+    this.cartItems.update(items => {
+      return items.map(item => {
+        const purchasedItem = cartItems.find(cartItem => cartItem.id === item.id);
+        if (purchasedItem) {
+          // Restamos la cantidad comprada al stock
+          item.stock -= purchasedItem.quantity;
+        }
+        return item;
+      });
+    });
+  }
 
   public cartItems = signal<CartItem[]>([])
 
@@ -61,9 +74,15 @@ export class CheckoutStoreService {
       cantidad: item.quantity
     }));
 
+
+
     // Enviamos la solicitud POST para procesar la compra
     return this.http.post(this.apiUrl, compra);
   }
+  public clearCart(): void {
+    this.cartItems.update(() => []);  
+  }
+
 }
 
 
