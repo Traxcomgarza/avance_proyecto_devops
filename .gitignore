@@ -1,0 +1,49 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# --- APP F1 SHOP ---
+
+# Compiled output
+/app-f1-shop/dist
+/app-f1-shop/tmp
+/app-f1-shop/out-tsc
+/app-f1-shop/bazel-out
+
+# Node
+/app-f1-shop/node_modules
+/app-f1-shop/npm-debug.log
+/app-f1-shop/yarn-error.log
+
+# IDEs and editors
+/app-f1-shop/.idea/
+/app-f1-shop/.project
+/app-f1-shop/.classpath
+/app-f1-shop/.c9/
+/app-f1-shop/*.launch
+/app-f1-shop/.settings/
+/app-f1-shop/*.sublime-workspace
+
+# Visual Studio Code
+/app-f1-shop/.vscode/*
+!/app-f1-shop/.vscode/settings.json
+!/app-f1-shop/.vscode/tasks.json
+!/app-f1-shop/.vscode/launch.json
+!/app-f1-shop/.vscode/extensions.json
+/app-f1-shop/.history/*
+
+# Miscellaneous
+/app-f1-shop/.angular/cache
+/app-f1-shop/.sass-cache/
+/app-f1-shop/connect.lock
+/app-f1-shop/coverage
+/app-f1-shop/libpeerconnection.log
+/app-f1-shop/testem.log
+/app-f1-shop/typings
+
+# System files
+/app-f1-shop/.DS_Store
+/app-f1-shop/Thumbs.db
+/app-f1-shop/hola.txt
+
+
+# backend 
+/backend/node_modules
