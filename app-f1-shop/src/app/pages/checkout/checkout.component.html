@@ -1,0 +1,51 @@
+<div class="container">
+  <nav class="navbar py-3">
+    <a [routerLink]="['/shop']">
+      <figure style="max-width: 10rem;">
+        <img src="assets/f1-logo.png" alt="Formula 1 Logo">
+      </figure>
+    </a>
+  </nav>
+
+  <section>
+    @if(cartItemsAmount() > 0) {
+      <div class="d-flex flex-column align-items-center">
+        <div class="col-12 col-md-7">
+          <div class="mb-3 d-flex align-items-center justify-content-between">
+            <h1>Checkout</h1>
+            <p class="text-primary">Total de productos ({{ cartItemsAmount() }})</p>
+          </div>
+          @for (cartItem of this.cartItems(); track $index) {
+            <div class="w-100">
+              <app-cart-item-card 
+                [id]="cartItem.id"
+                [img]="cartItem.img"
+                [title]="cartItem.title"
+                [price]="cartItem.price"
+                [description]="cartItem.description"
+                [stock]="cartItem.stock"
+                [quantity]="cartItem.quantity"
+              />
+            </div>
+          }
+          
+          <div class="d-flex align-items-center justify-content-between mb-5">
+            <div>
+              <h4 class="m-0">Total a pagar:</h4>
+              <h2 class="text-primary fw-bold m-0">{{ totalPrice() | currency: 'MXN' }}</h2>
+            </div>
+            <button class="btn btn-primary">
+              Realizar compra
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="border rounded p-5 d-flex flex-column align-items-center justify-content-between">
+        <i class="fa-solid fa-cart-shopping fs-1 mb-3"></i>
+        <h4>Aún no hay productos en su carrito de compras</h4>
+        <a [routerLink]="['/shop']">Regresar a comprar</a>
+      </div>
+    }
+  </section>
+</div>

@@ -1,0 +1,58 @@
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img [src]="img()" class="img-fluid rounded-start" alt="title()">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h5 class="card-title">{{ title() }}</h5>
+            <p class="card-text">{{ description() }}</p>
+
+            <div>
+              <small>Precio unitario:</small>
+              <h5 class="text-primary">{{ price() | currency: 'MXN' }}</h5>
+            </div>
+
+            <div>
+              <small>Precio total:</small>
+              <h4 class="fw-bold text-primary">{{ totalPrice() | currency: 'MXN' }}</h4>
+            </div>
+    
+            @if(stock() > 0) {
+              <small class="text-body-secondary">
+                En stock: {{ stock() }} {{ stock() === 1 ? 'producto' : 'productos' }}
+              </small>
+        
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                  <button type="button" class="btn btn-outline-primary" (click)="decrementQuantity()">
+                    <i class="fa-solid fa-minus"></i>
+                  </button>
+                  <button type="button" disabled class="btn btn-outline-primary">
+                    {{ quantity() }}
+                  </button>
+                  <button type="button" class="btn btn-outline-primary" (click)="incrementQuantity()">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            }
+            @if(stock() === 0) {
+              <div class="p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3">
+                Producto agotado
+              </div>
+            }
+          </div>
+
+          <div>
+            <button class="btn" (click)="onDeleteCartItem(id())">
+              <i class="fa-regular fa-trash-can fs-3 text-primary"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

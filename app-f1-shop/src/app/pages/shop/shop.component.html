@@ -1,0 +1,43 @@
+<div class="container">
+  <nav class="navbar py-3">
+    <a [routerLink]="['/shop']">
+      <figure style="max-width: 10rem;">
+        <img src="assets/f1-logo.png" alt="Formula 1 Logo">
+      </figure>
+    </a>
+
+    <div class="d-flex align-items-center">
+      <a type="button" class="link-offset-2 link-underline link-underline-opacity-0 me-3 text-black" [routerLink]="['/login']">Cerrar sesión</a>
+      <a type="button" class=" position-relative me-3 text-black" [routerLink]="['/checkout']">
+        <i class="fa-solid fa-cart-shopping fs-2"></i>
+        @if(cartItemsAmount() > 0) {
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cartItemsAmount() > 99 ? '99+' : cartItemsAmount() }}
+          </span>
+        }
+      </a>
+    </div>
+  </nav>
+
+  <section>
+    <div class="mb-3">
+      <h1>Productos</h1>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-3">
+      @for (product of this.products(); track $index) {
+        <div class="col">
+          <app-product-card
+            [id]="product.id"
+            [img]="product.img"
+            [title]="product.title"
+            [price]="product.price"
+            [description]="product.description"
+            [stock]="product.stock"
+            (cartItem)="onClickAddToCart($event)"
+          />
+        </div>
+      }
+    </div>
+  </section>
+</div>
