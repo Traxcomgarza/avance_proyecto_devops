@@ -124,7 +124,7 @@ resource "aws_security_group" "SG-linux-back-end" {
         from_port = 3000
         to_port = 3000
         protocol = "tcp"
-        cidr_blocks = ["${aws_instance.linux_webserver.private_ip}/32"] 
+        cidr_blocks = ["${aws_instance.linux-webserver.private_ip}/32"] 
     }
    
    egress {
