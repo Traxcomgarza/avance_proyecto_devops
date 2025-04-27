@@ -95,11 +95,10 @@ resource "aws_route_table_association" "private_subnet_2_association" {
       
     }
         egress {
-            from_port = 22
-            to_port = 22
-            protocol = "tcp"
-            #Permite la conexion a la subnet privada y publica
-            cidr_blocks = [ "10.0.0.0/24", "10.0.1.0/24" ] #subnet id
+            from_port = 0
+            to_port = 0
+            protocol = -1
+            cidr_blocks = [ "0.0.0.0/0" ]
 
      }
         tags = {
@@ -114,22 +113,28 @@ resource "aws_security_group" "SG-linux-back-end" {
     name = "SG-linux-back-end"
     description = "Security group for linux back-end Server"
     #ssh ingress and egress rules
-    ingress {
-        from_port = 5432
-        to_port = 5432
-        protocol = "tcp"
-        cidr_blocks = [ "${aws_instance.linux-webserver.private_ip}/32" ] #subnet id
-
-    }
+    
     ingress {
         from_port = 22
         to_port = 22
         protocol = "tcp"
         cidr_blocks = [ "${aws_instance.linux-jumpserver.private_ip}/32" ] #subnet id
     }
+    ingress {
+        from_port = 3000
+        to_port = 3000
+        protocol = "tcp"
+        cidr_blocks = ["${aws_instance.linux_webserver.private_ip}/32"] 
+    }
    
+   egress {
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = [ "0.0.0.0/0" ] 
+   }
     tags = {
-        Name = "SG-windows-back-ender"
+        Name = "SG-linux-back-end"
 
     }
 }
@@ -220,7 +225,13 @@ resource "aws_security_group" "sg_db" {
     from_port   = 5432  # Puerto de PostgreSQL
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [ "${aws_instance.linux-webserver.private_ip}/32" ] 
+    cidr_blocks = [ "${aws_instance.linux-back-end.private_ip}/32" ] 
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [ "0.0.0.0/0" ] #permite todo el trafico de salida para el uso de frameworks
   }
 }
 
