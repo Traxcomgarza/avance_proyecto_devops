@@ -3,7 +3,7 @@
 ## 🧑‍💻 **Desarrollado por:**
 - Brandon Carrion
 - Carolina Hermosillo
-- Gerardo Cerda
+- Gerardo Escamilla
 
 ## 🌐 **Front-end:**
 Desarrollado en el proyecto `app-f1-shop`
